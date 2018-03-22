@@ -1,0 +1,17 @@
+{%extends 'rammyblog/base3.html'%}
+{% block content %}
+
+
+
+<form method="post" action="{%url 'register'%}">
+	{% csrf_token %}
+	{% if form.errors%}
+<p>Informations given arre Incorrect!</p>
+	{% endif %}
+
+	{{form}}
+</br>
+<input type="submit" valur="register">
+</form>
+
+{%endblock%}

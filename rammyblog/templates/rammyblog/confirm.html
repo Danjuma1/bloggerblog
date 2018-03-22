@@ -1,0 +1,19 @@
+      {% extends 'rammyblog/base3.html' %}
+      {%block content%}
+      
+      <div id="content">
+        <div class="post">
+          <h1>Delete Post</h1>
+          <form method="POST" class="post-form">
+            {%csrf_token%}
+            <p>Are you sure you want to delete {{post.title}}</p>
+          <input type="submit" value="Delete"/></form>
+          <p class="frmd">
+          <button onclick="window.history.back();" class="btn btn-default" type="button">Cancel</button>
+         <a href="{%url 'details' post.id%}"><input type= 'submit' value="Cancel"/></a>
+        </form>
+          </div>
+        </div>
+       
+        {%endblock%}
+

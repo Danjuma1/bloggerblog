@@ -1,0 +1,13 @@
+      {% extends 'rammyblog/base3.html' %}
+      {%block content%}
+      {%for post in draft%}
+      <div id="content">
+        <div class="post">
+          <h2 class="title"><a href="{%url 'details' post.id%}">{{post.title}}</h2>
+          <p class="meta"><small>Posted by <a href="#">{{post.author}}</a> | <a href="#">Edit</a> Filed under <a href="#">{{post.tags}}</a>| <a href="#">No Comments &raquo;</a> | Created Date: {{post.created_date}}</p></small>
+          <div class="entry">
+            <p>{{post.content|linebreaksbr|truncatechars:300 }}</p>
+          </div>
+        </div>
+        {% endfor %}
+        {%endblock%}

@@ -1,0 +1,44 @@
+     
+      {% extends 'rammyblog/base3.html' %}
+
+      {%block content%}
+      {%for post in post%}
+ 
+
+            <article class="post">
+              <div class="primary">
+
+                    <h2><a href="{%url 'details' post.id%}">{{post.title}}</a></h2>
+
+                    <p class="post-info"><span>filed under</span> <a href="#">{{post.tags}}</a></p>
+
+                    <div class="image-section">
+                      <img src="images/img-post.jpg" alt="image post" height="206" width="498"/>
+                  </div>
+
+                    <p>{{post.content|linebreaksbr|truncatechars:300 }}
+          </p>
+
+                    <p><a class="more" href="{%url 'details' post.id%}">Continue Reading &raquo;</a></p>
+
+                </div>
+
+                <aside>
+            <p class="dateinfo">{{post.pub_date |date:"M"}}<span>{{post.pub_date |date:"d"}}</span></p>
+
+                    <div class="post-meta">
+                        <h4>Post Info</h4>
+                      <ul>
+                           <li class="user"><a href="#">{{post.author}}</a></li>
+                           <li class="time"><a href="#">{% now "H:i" %}</a></li>
+                           <li class="comment"><a href="#">2 Comments</a></li>
+                           <li class="permalink"><a href="#">Permalink</a></li>
+                        </ul>
+          </div>
+
+                </aside>
+
+        </article>
+        {% endfor %}
+        {%endblock%}
+        

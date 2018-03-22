@@ -1,0 +1,40 @@
+ {% extends 'rammyblog/base3.html' %}
+{%load static%}
+{%block content%}
+{%load static%}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Submit Your Post - Formoid jquery form validation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="blurBg-false" style="background-color:#EBEBEB">
+
+
+
+<!-- Start Formoid form-->
+
+<link rel="stylesheet" href="{%static 'rammyblog/formoid_files/formoid1/formoid-metro-cyan.css'%}" type="text/css" />
+<script type="text/javascript" src="{% static 'rammyblog/formoid_files/formoid1/jquery.min.js'%}"></script>
+<form class="formoid-metro-cyan" style="background-color:#f5f0ff;font-size:11px;font-family:'Open Sans','Helvetica Neue','Helvetica',Arial,Verdana,sans-serif;color:#666666;max-width:480px;min-width:150px" method="post"><div class="title"><h2>Submit Your Post</h2></div>
+
+      <div id="content">
+        <div class="post">
+          <h1>NEW POST</h1>
+          <form method="POST" class="post-form">
+            {%csrf_token%}
+          {{form}}
+         <div class="submit"><input type="submit" value="Submit"/></div></form><p class="frmd">
+        </form>
+          </div>
+        </div>
+</body>
+</html>
+ {%endblock%}
+
+
+
+
+     
+
