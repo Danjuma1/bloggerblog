@@ -1,7 +1,6 @@
       {% extends 'rammyblog/base5.html' %}
       {%block content%}
-         {%for post in draft%}
-              
+         {%for post in new_search%} 
             <div class="card-body">
               <h2 class="card-title"><a href="{%url 'details' post.slug%}">{{post.title}}</a></h2>
               <p class="card-text">{{post.content|linebreaksbr|truncatechars:300 }}</p>

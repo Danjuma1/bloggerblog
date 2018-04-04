@@ -1,9 +1,9 @@
       {% extends 'rammyblog/base5.html' %}
       {%block content%}
-      
+      {%if comment.created_by == request.user%}
       <div id="content">
         <div class="post">
-          <h1>Delete Post</h1>
+          <h1>Delete Comment</h1>
           <form method="POST" class="post-form">
             {%csrf_token%}
             <p>Are you sure you want to delete {{post.title}}</p>
@@ -13,6 +13,8 @@
         </form>
           </div>
         </div>
-       
+        {%else%}
+        {%include 'rammyblog/404.html'%}
+       {% endif %}
         {%endblock%}
 

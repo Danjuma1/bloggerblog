@@ -1,0 +1,105 @@
+
+      {% load humanize%}
+      {%block content%}
+      {%load static%}
+   
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html">
+  <title> {{author.username |title}}- BloggersBlog</title>
+  <meta name="author" content="Jake Rocheleau">
+  <link rel="shortcut icon" href="http://designshack.net/favicon.ico">
+  <link rel="icon" href="http://designshack.net/favicon.ico">
+   <link href="{%static 'rammyblog/vendor/bootstrap/css/bootstrap.css'%}" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" media="all" href="{%static 'rammyblog/css/profile.css' %}">
+  <script type="text/javascript" src="{% static 'rammyblog/js/jquery-1.10.2.min.js'%}"></script>
+</head>
+
+<body>
+  <div id="topbar">
+  <a href="{% url 'index'%}">Back to Homepage</a>
+  </div>
+            
+  {%for bio in bio%}
+  {%if bio.picture%}
+    <div id="w">
+  <div id="content" class="clearfix">
+    <div id="userphoto"><img src="{{bio.picture.url}}" alt="{{author.username}}" height="154" width="154"  ></div>
+  {% else %}
+    <div id="w">
+    <div id="content" class="clearfix">
+      <div id="userphoto"><img src="{%static 'rammyblog/images/avatar.png'%}" alt="default avatar"></div>
+
+    {%endif%}
+
+    {%endfor%}
+      <h1>{{author.first_name|title }} {{author.last_name|title }} ({{author.username|title }})</h1>
+      <nav id="profiletabs">
+        <ul class="clearfix">
+          <li><a href="#bio" class="sel">Bio</a></li>
+          <li><a href="#activity">Activity</a></li>
+          <li><a href="{% url 'index'%}">Settings</a></li>
+        </ul>
+      </nav></br></br>
+      
+      
+      {%for bio in bio%}
+        <section id="bio">
+        {%if request.user == bio.user%}
+        <div id ='content' align="right"><form action="{% url 'upload_pics' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input id="id_image" type="file" class="" name="image">
+      <br>
+          <input type="submit" value="Submit" />
+        </form></div>
+        <div id="content" align="right"><a href="{%url 'accountupdate'  %}"  class="btn btn-primary">Edit Bio</a></div>
+        {% endif %}
+       <p><strong>About:</strong></p>  <p>{{bio.about |linebreaksbr}}</p>
+        <p><strong>Phone No:</strong></p> <p>+{{bio.phone}}</p>
+        <p><strong>Website:</strong></p>  <p><a href="{{bio.website}}">{{bio.website}}</a></p>
+       <p><strong>City:</strong></p>    <p>{{bio.city}}</p>
+      </section>
+      <
+      {%endfor%}
+
+
+      <section id="activity" class="hidden">
+        <p>Most recent posts:</p>
+        {%for post in posts%}
+        <p class="activity">{{post.pub_date | naturaltime  }}  <a href="{%url 'details' post.slug %}">{{post.title}}</a></p>
+        {%endfor%}
+      </section>
+
+      <section id="settings" class="hidden">
+        <p>Edit your user settings:</p>
+       <form method="post" novalidate>
+            {% csrf_token %}
+            {% include 'rammyblog/includes/forms.html' %}
+            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+          </form>
+      </section>
+    </div><!-- @end #content -->
+  </div><!-- @end #w -->
+<script type="text/javascript">
+$(function(){
+  $('#profiletabs ul li a').on('click', function(e){
+    e.preventDefault();
+    var newcontent = $(this).attr('href');
+    
+    $('#profiletabs ul li a').removeClass('sel');
+    $(this).addClass('sel');
+    
+    $('#content section').each(function(){
+      if(!$(this).hasClass('hidden')) { $(this).addClass('hidden'); }
+    });
+    
+    $(newcontent).removeClass('hidden');
+  });
+});
+</script>
+</body>
+</html>
+
+        {%endblock%}

@@ -1,69 +1,117 @@
-      {% extends 'rammyblog/base3.html' %}
-      {%block content%}
-      
-<!-- content-wrap -->
-<div id="content-wrap">
+{% extends 'rammyblog/base5.html' %}
+{%load static%}
+{%block title%} {{post.title}} -BloggersBlog{%endblock%}
+{%block content%}
 
-    <!-- content -->
-    <div id="content" class="clearfix">
 
-        <!-- main -->
-        <div id="main">
+     
 
-            <!-- post -->
-            <article class="post single">
-                <!-- primary -->
-              <div class="primary">
-          <h2 class="title">{{post.title}}</h2>
-          <p class="meta"><small>Posted by <a href="#">{{post.author}}</a> |{%if request.user == post.author or user.is_staff%} <a href="{% url 'post_edit' post.id %}">Edit</a> | <a href="{% url 'post_delete' post.id %}">Delete Post</a>|{% endif %}  Filed under <a href="#">{{post.tags}}</a>| <a href="#">No Comments &raquo;</a> | 
+        <!-- Post Content Column -->
+       
 
-          {%if post.pub_date%}:
+          <!-- Title -->
+          <h1 class="mt-4">{{post.title}}</h1>
+
+          <!-- Author -->
+          <p class="lead">
+            by
+            <a href="{%url 'profile' post.author%}">{{post.author | title}}</a>
+          </p>
+
+          <p class="lead"><small>Posted by <a href="{%url 'profile' post.author%}">{{post.author | title}}</a> |{%if request.user == post.author or user.is_staff%} <a href="{% url 'post_edit' post.slug %}">Edit</a> | <a href="{% url 'post_delete' post.slug %}">Delete Post</a>|{% endif %}  Filed under <a href="{%url 'tags' post.tags%}">{{post.tags}}</a>|<a href="#comment">{% with comments.count as total_comments %}
+{{ total_comments }} comment{{ total_comments|pluralize }}
+{% endwith %}</a> | 
+
+          {%if post.pub_date%}
           Published: {{post.pub_date}}</p></small>
           {%else%}
-          {%if user.is_staff%}<a class="btn btn-default" href="{% url 'post_publish' post.id %}">Publish</a>{% endif %}
+          {%if user.is_staff%}<a class="btn btn-default" href="{% url 'post_publish' post.slug %}">Publish</a>{% endif %}
           {% endif %}
-          <div class="entry">
-            <p>{{post.content|linebreaksbr}}</p>
-          </div>
-        </div>
+          <hr>
+          <!-- Post Content -->
+        <div class="content-markdown">{{post.content}}</div>
+          <hr>
 
+          <!-- Comments Form -->
+         <section id='comment'>{% if new_comment %}
+<h2>Your comment has been added.</h2>
+{% else %}
+{% block stylesheet %}
+  <link rel="stylesheet" href="{% static 'rammyblog/css/simplemde.min.css' %}">
+{% endblock %}
 
-            <aside>
+{% block javascript %}
+  <script src="{% static 'rammyblog/js/simplemde.min.js' %}"></script>
+  <script>
+    var simplemde = new SimpleMDE();
+  </script>
+{% endblock %}
 
-              <p class="dateinfo">{{post.pub_date |date:"M"}}<span>{{post.pub_date |date:"d"}}</span></p>
-
-                <div class="post-meta">
-                    <h4>Post Info</h4>
-                    <ul>
-                        <li class="user"><a href="#">{{post.author}}</a></li>
-                        <li class="time"><a href="#">{% now "H:i" %}</a></li>
-                        <li class="comment"><a href="#">10 Comments</a></li>
-                        <li class="permalink"><a href="#">Permalink</a></li>
-                    </ul>
+          <div class="card my-4">
+            <h5 class="card-header">Leave a Comment:</h5>
+            <div class="card-body">
+              {%if user.is_authenticated%}
+              <form method="post" novalidate>
+                {%csrf_token%}
+                {% include 'rammyblog/includes/forms.html' %}
+                <div class="form-group">
                 </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+              {%else%}
+              <p>You must be Logged in to Leave a Comment</p>
+              <p> <a href="{%url 'login'%}">Log in </a>or <a href="{%url 'register'%}">SignUp</a> If you do not have an Account</p>
+              {%endif%}
+            </div>
+          </div>
 
-               <div class="post-meta">
-                    <h4>tags</h4>
-          <ul class="tags">
-                <li><a href="index.html" rel="tag">{{post.tags}}</a></li>
-                  
-               </ul>
-               </div>
+          <!-- Single Comment -->
+          {% for comment in comments %}
+          <div class="media mb-4">
+            <img class="d-flex mr-3 rounded-circle" src="{{comment.photo.picture.url}}" alt="" height="50" width="50">
+            <div class="media-body">
+              
+              <a href="{%url 'profile' comment.created_by%}"><h5 class="mt-0">{{comment.created_by}}</h5></a>
+              <div class="content-markdown">{{comment.message  | linebreaks}}</div>
+              {%if comment.created_by == request.user%}
+              <a href="{%url 'comment_delete' comment.id post.slug%}">Delete</a>
+              <a href="{%url 'comment_edit' comment.id post.slug%}">Edit</a>
+              {% endif %}
+            </div>
+          </div>
 
-            </aside>
+          {%empty%}
+          <p>No Comment Yet</p>
+          {%endfor%}
+          {%endif%}
+</section> 
+          <!-- Comment with nested comments -->
+          <!--<div class="media mb-4">
+            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+            <div class="media-body">
+              <h5 class="mt-0">Commenter Name</h5>
+              Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
 
-        <!-- /post -->
-        </article>
+              <div class="media mt-4">
+                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                <div class="media-body">
+                  <h5 class="mt-0">Commenter Name</h5>
+                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                </div>
+              </div>
 
-        <!-- post-bottom-section -->
+              <div class="media mt-4">
+                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                <div class="media-body">
+                  <h5 class="mt-0">Commenter Name</h5>
+                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                </div>
+              </div>-->
+
+           
+        
+  
       
-        <!-- /main -->
-        </div>
 
-       
-    <!-- content -->
-  </div>
-
-<!-- /content-out -->
-</div>
-        {%endblock%}
+        
+{%endblock%}

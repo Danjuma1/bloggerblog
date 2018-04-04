@@ -1,0 +1,163 @@
+
+{%load static%}
+{% block content%}
+{%load humanize%}
+	<title> {{author.username |title}}- BloggersBlog</title>
+	
+	<link rel="stylesheet" type="text/css" href="{%static 'rammyblog/css/global.css'%}" />
+
+</head>
+
+<body>	
+		
+	<nav>
+		<ul id="n" class="clearfix">
+			<li><a href="{%url 'index'%}">Homepage</a></li>
+         {%if author.username == request.user %}
+          <li><a href="{%url 'accountupdate'  %}">Update Account</a> 
+          	{% endif %}
+		</ul>
+	</nav>
+{%for bio in bio%}
+	 {%if bio.picture%}
+	<div id="content" class="clearfix">
+		<section id="left">
+			<div id="userStats" class="clearfix">
+				<div class="pic">
+					<a href="{{bio.picture.url}}"><img src="{{bio.picture.url}}" alt="{{author.username}}"" width="150" height="150" /></a>
+				</div>
+			{%else%}
+	<div id="content" class="clearfix">
+		<section id="left">
+			<div id="userStats" class="clearfix">
+				<div class="pic">
+					<a href="#"><img src="{%static 'rammyblog/images/avatar.png'%}" width="150" height="150" /></a>
+				</div>
+				  {%endif%}
+
+				
+				<div class="data">
+					<h1>{{author.first_name|title }} {{author.last_name|title }} ({{author.username|title }})</h1>
+					<h3>{{bio.city}}</h3>
+					<h4><a href="{{bio.website}}">{{bio.website}}</a></h4>
+					<!--<div class="socialMediaLinks">
+						<a href="http://twitter.com/jakerocheleau" rel="me" target="_blank"><img src="img/twitter.png" alt="@jakerocheleau" /></a>
+						<a href="http://gowalla.com/users/JakeRocheleau" rel="me" target="_blank"><img src="img/gowalla.png" /></a>
+					</div>-->
+					<div class="sep"></div>
+					<ul class="numbers clearfix">
+						<li>Posts:<strong>{% with posts.count as total_posts %}
+{{ total_posts }} {{ total_comments|pluralize }}
+{% endwith %}</strong></li>
+						<li>Role:<strong>
+							{%if author.is_superuser%}
+							<small>Admin</small>
+							{%elif author.is_staff%}
+							<small>Staff</small>
+							{%else%}
+							<small>Author</small>
+							{%endif%}
+
+						</strong></li>
+					</ul>
+				</div>
+			</div>
+
+		{%if request.user == bio.user%}
+        <div id ='' ><form action="{% url 'upload_pics' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input id="id_image" type="file" class="" name="image">
+      <br>
+          <input type="submit" value="Submit" />
+        </form></div>
+        {% endif %}
+			
+			<h1>About Me:</h1>
+			<p>{{bio.about |linebreaksbr}}</p>
+			  <h1>Most recent posts:</h1>
+             {%for post in posts %}
+           
+            <div class="">
+              <h2 class=""><a href="{%url 'details' post.slug %}">{{post.title}}</a></h2>
+              <h3><div class="">{{post.content| truncatechars:200 | cut:"![](" |cut:")" | urlizetrunc:1 |cut:"..." }}...</div></h3>
+           
+             <h4><div class=""> By <a href="{%url 'profile' post.author%}">{{post.author | title }}</a> Published in <a href="{%url 'tags' post.tags%}">{{post.tags |title }}</a> on {{ post.pub_date}}</a>
+            </div>
+        </h4>
+             </div>
+        <br>
+
+        {% endfor %}
+      {% include 'rammyblog/includes/pagination.html' %}
+
+
+
+      {%empty%}
+    <div id="content" class="clearfix">
+		<section id="left">
+			<div id="userStats" class="clearfix">
+				<div class="pic">
+					<a href="#"><img src="{%static 'rammyblog/img/user_avatar.jpg'%}" width="150" height="150" /></a>
+				</div>
+					<div class="data">
+					<h1>{{author.first_name|title }} {{author.last_name|title }} ({{author.username|title }})</h1>
+					<h3>City: Unkonwn</h3>
+					<h4><a href="{{bio.website}}">{{bio.website}}</a></h4>
+					<!--<div class="socialMediaLinks">
+						<a href="http://twitter.com/jakerocheleau" rel="me" target="_blank"><img src="img/twitter.png" alt="@jakerocheleau" /></a>
+						<a href="http://gowalla.com/users/JakeRocheleau" rel="me" target="_blank"><img src="img/gowalla.png" /></a>
+					</div>-->
+					<div class="sep"></div>
+					<ul class="numbers clearfix">
+						<li>Posts:<strong>{% with posts.count as total_posts %}
+{{ total_posts }} {{ total_comments|pluralize }}
+{% endwith %}</strong></li>
+
+						<li>Role:<strong>
+							{%if author.is_superuser%}
+							<small>Admin</small>
+							{%elif author.is_staff%}
+							<small>Staff</small>
+							{%else%}
+							<small>Author</small>
+							{%endif%}
+
+						</strong></li>
+					</ul>
+				</div>
+			</div>
+
+			<h1>About Me:</h1>
+
+			{% if request.user == author.username %}
+			<p>UPDATE PROFILE BELOW</p>
+			<a href="{%url 'accountupdate'  %}">Settings</a> 
+			{%else%}
+			<a href="{%url 'accountupdate'  %}">Settings</a> 
+			{%endif%}
+
+		 <h1>Most recent posts:</h1>
+			 {%for post in posts %}
+           
+            <div class="">
+              <h2 class=""><a href="{%url 'details' post.slug %}">{{post.title}}</a></h2>
+              <h3><div class="">{{post.content| truncatechars:200 | cut:"![](" |cut:")" | urlizetrunc:1 |cut:"..." }}...</div></h3>
+           
+             <h4><div class=""> By <a href="{%url 'profile' post.author%}">{{post.author | title }}</a> Published in <a href="{%url 'tags' post.tags%}">{{post.tags |title }}</a> on {{ post.pub_date}}</a>
+            </div>
+        </h4>
+             </div>
+        <br>
+
+        {% endfor %}
+      {% include 'rammyblog/includes/pagination.html' %}
+
+      {%endfor%}
+		</section>
+
+		</div>
+
+<div style="margin-top: 500px"></div>
+</body>
+{%endblock%}
+</html>

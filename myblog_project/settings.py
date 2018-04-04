@@ -37,7 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rammyblog'
+    'rammyblog',
+    'widget_tweaks',
+    'markdownx',
+    'pagedown',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [
@@ -119,4 +123,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL ='/media/'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
