@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'markdownx',
     'pagedown',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'taggit'
 ]
 
 MIDDLEWARE = [

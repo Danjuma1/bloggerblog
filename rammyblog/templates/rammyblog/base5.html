@@ -76,7 +76,9 @@
         <!-- Blog Entries Column -->
         <div class="col-md-8">
 
-          <h1 class="my-4">BloggersBlog
+       <h1 class="my-4">BloggersBlog
+          </h1>
+              <h1 class="my-4">
           </h1>
 
           <!-- Blog Post -->
@@ -93,7 +95,8 @@
 
         <!-- Sidebar Widgets Column -->
         <div class="col-md-4">
-
+          {%block sidebar%}
+          {% endblock %}
           <!-- Search Widget -->
           <div class="card my-4">
             <h5 class="card-header">Search</h5>
@@ -109,6 +112,7 @@
           </div>
       
           <!-- Categories Widget -->
+
           <div class="card my-4">
             <h5 class="card-header">Categories</h5>
             <div class="card-body">
@@ -176,6 +180,8 @@
     <script src="{%static 'rammyblog/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.19/marked.min.js"></script>
+ 
+
 
 
        <script type="text/javascript">
@@ -192,11 +198,17 @@
           $(this).addClass("img-fluid")         
         })
 
+     $(".comment-reply-").click(function(event){
+        event.preventDefault();
+        $(this).next(".comment-reply").fadeToggle();
+      })
+
 
 })
 
 
     </script>
+    
     {% block javascript %}{%endblock%}
 
   </body>

@@ -1,0 +1,64 @@
+    {% load static%}
+    <div class="span3 well">
+        {% if bio.picture%}
+      <div class="media mb-4">
+            <a href="#aboutModal" data-toggle="modal" data-target="#myModal"><img src="{{bio.picture_or_default.url}}" name="aboutme" width="60" height="60" class="d-flex mr-3 rounded-circle"></a>
+            {%else%}
+            <a href="#aboutModal" data-toggle="modal" data-target="#myModal"><img src="{%static 'rammyblog/images/avatar.png'%}" name="aboutme" width="60" height="60" class="d-flex mr-3 rounded-circle"></a>
+            {% endif %}
+            <div class="media-body">
+              <h5 class="mt-0">{{post.author.first_name|title }} {{post.author.last_name|title }} ({{bio.user|title }})</h5></a>
+              <div class=""><em>click my face for more</em></div>
+              </div>
+          </div>
+        
+
+          
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title" id="myModalLabel">More About {{post.author.first_name|title }} </h4>
+                    </div>
+                <div class="modal-body">
+                    <center>
+                    {% if bio.picture%}
+                    <img src="{{bio.picture.url}}" name="aboutme" width="140" height="140" border="0" class="img-circle"></a>
+                    {%else%}
+                    <img src="{%static 'rammyblog/images/avatar.png'%}" name="aboutme" width="140" height="140" border="0" class="img-circle"></a>
+                    {%endif%}
+                    <h3 class="media-heading">{{post.author.first_name|title }} {{post.author.last_name|title }} ({{bio.user|title }})<br><small>{{bio.city}}</small></h3>
+
+                    <span><strong>Postion: </strong></span>
+                    {%if post.author.is_superuser%}
+                            <span class="label label-warning">Admin</span>
+                            {%elif post.author.is_staff%}
+                            <span class="label label-warning">Staff</span>
+                            {%else%}
+                        <span class="label label-warning">Author</span>
+                         {%endif%}
+                        <!--
+                        <span class="label label-info">Adobe CS 5.5</span>
+                        <span class="label label-info">Microsoft Office</span>
+                        <span class="label label-success">Windows XP, Vista, 7</span>-->
+                    </center>
+                    <hr>
+                    <center>
+                    <p class="text-left"><strong>Bio: </strong><br>
+                        {{bio.about | truncatechars:50 | linebreaks}}<span class="arrow-right arrow small"> </span><a href="{%url 'profile' post.author%}">more</a><br>
+       </p>
+                    <br>
+                    </center>
+                </div>
+                <div class="modal-footer">
+                    <center>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">I've heard enough about {{bio.user|title }}</button>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

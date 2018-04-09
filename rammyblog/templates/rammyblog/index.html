@@ -8,7 +8,7 @@
               <h2 class="card-title"><a href="{%url 'details' post.slug  %}">{{post.title}}</a></h2>
               <h6><div class="">{{post.content| truncatechars:200 | cut:"![](" |cut:")" | urlizetrunc:1 |cut:"..." }}...</div></h6>
            
-             <div class=""> By <a href="{%url 'profile' post.author%}">{{post.author | title }}</a> Published in <a href="{%url 'tags' post.tags%}">{{post.tags |title }}</a> on {% now "M d, Y" %}</a>
+             <div class=""> By <a href="{%url 'profile' post.author%}">{{post.author | title }}</a> Published in <a href="{%url 'tags' post.tags%}">{{ post.tags.all|join:" " }}</a> on {% now "M d, Y" %}</a>
             </div>
              </div>
           <hr>

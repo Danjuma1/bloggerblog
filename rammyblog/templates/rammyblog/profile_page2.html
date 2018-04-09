@@ -24,7 +24,7 @@
 		<section id="left">
 			<div id="userStats" class="clearfix">
 				<div class="pic">
-					<a href="{{bio.picture.url}}"><img src="{{bio.picture.url}}" alt="{{author.username}}"" width="150" height="150" /></a>
+					<a href="{{bio.picture_or_default.url}}"><img src="{{bio.picture_or_default.url}}" alt="{{author.username}}"" width="150" height="150" /></a>
 				</div>
 			{%else%}
 	<div id="content" class="clearfix">
@@ -33,6 +33,8 @@
 				<div class="pic">
 					<a href="#"><img src="{%static 'rammyblog/images/avatar.png'%}" width="150" height="150" /></a>
 				</div>
+			</div>
+
 				  {%endif%}
 
 				
@@ -156,6 +158,7 @@
 		</section>
 
 		</div>
+	</section>
 
 <div style="margin-top: 500px"></div>
 </body>

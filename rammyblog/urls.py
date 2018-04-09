@@ -20,6 +20,7 @@ urlpatterns = [
     path('account_settings', account_views.AccountUpdate.as_view(), name = 'accountsettings'),
     path('comment/<comment_id>/<post_slug>/delete', views.comment_delete, name = 'comment_delete'),
     path('upload/', views.upload_pics, name = 'upload_pics'),
-    
+    #path('comment/<pk>/', views.comment_thread, name ='thread'),
+   
     
 ]

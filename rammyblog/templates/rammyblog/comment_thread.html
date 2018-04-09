@@ -1,0 +1,69 @@
+{% extends 'rammyblog/base5.html' %}
+{%load static%}
+{%block title%} {{post.title}} -BloggersBlog{%endblock%}
+{%block styleshee%}  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+{%endblock%}
+{%block content%}
+
+
+     
+
+        <!-- Post Content Column -->
+ 
+
+          <!-- Comments Form -->
+         <section id='comment'>
+
+          <!-- Single Comment -->
+          
+          <div class="media mb-4">
+            <img class="d-flex mr-3 rounded-circle" src="{{comment.photo.picture.url}}" alt="" height="50" width="50">
+            <div class="media-body">
+              <a href="{%url 'profile' comment.created_by%}"><h5 class="mt-0">{{comment.created_by}}</h5></a>
+
+              <div class="content-markdown">{{comment.message  | linebreaks}}</div>
+              
+
+              <div >
+              {% for child_comment in comment.children%}
+              <div class="media mt-4">
+            <img class="d-flex mr-3 rounded-circle" src="{{comment.photo.picture.url}}" alt="" height="50" width="50">
+            <div class="media-body">
+              <a href="{%url 'profile' comment.created_by%}"><h5 class="mt-0">{{child_comment.created_by}}</h5></a>
+              <div class="content-markdown">{{child_comment.message  | linebreaks}}</div>
+              
+              {% endfor %}
+                  {%if user.is_authenticated%}
+              <form method="post" novalidate>
+                {%csrf_token%}
+                {% include 'rammyblog/includes/forms.html' %}
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <div class="form-group">
+                </div>
+                <button type="submit" class="btn btn-primary">Reply</button>
+              </form>
+            
+
+              {%else%}
+              <p>You must be Logged in to Leave a Comment</p>
+              <p> <a href="{%url 'login'%}">Log in </a>or <a href="{%url 'register'%}">SignUp</a> If you do not have an Account</p>
+              {%endif%}
+          
+            </div>
+          </div>
+        </div>
+        </div>
+          </div>
+         
+    
+
+</section> 
+   
+
+          
+
+        
+{%endblock%}
+        

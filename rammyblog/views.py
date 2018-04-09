@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from .models import Blogpost, Comment, UserProfile
 from django.utils import timezone
@@ -12,7 +12,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.views.generic import ListView, UpdateView
 from django.urls import reverse_lazy
 from  django.utils.decorators import method_decorator
-
+from .utils import get_read_time, count_words
 #from django.views.generic import ListView
 #from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -40,8 +40,13 @@ def tags(request, post_tags):
 
 def details(request, post_slug):
 	post =  get_object_or_404(Blogpost, slug = post_slug)
-	comments = post.comments.filter(active = True).order_by('-created_at')
-	#pic = UserProfile.objects.get(user = )
+	comments = post.comments.filter(active = True).order_by('-created_at').filter(parent = None)
+	comment_all = post.comments.filter(active = True).order_by('-created_at')
+	session_key = 'viewed_topic_{}'.format(post.slug)
+	if not request.session.get(session_key, False):
+		post.views+=1
+		post.save()
+		request.session[session_key] = True 	
 	if request.method == 'POST':
 		form = CommentForm(request.POST)
 		if form.is_valid():
@@ -50,17 +55,27 @@ def details(request, post_slug):
 			new_comment.created_by = request.user
 			new_comment.topic_id = post.pk
 			new_comment.photo_id = request.user.pk
+			parent_obj = None
+			try:
+				new_comment.parent_id = int(request.POST.get("parent_id"))
+			except:
+				new_comment.parent_id = None
+			if new_comment.parent_id:
+				parent_qs = Comment.objects.filter(id  = new_comment.parent_id)
+				if parent_qs.exists() and parent_qs.count()== 1:
+					parent_obj = parent_qs.first()		
+
 			new_comment.save()
 			return redirect('details', post_slug)
 	else:
 		form = CommentForm()
-	#bio = UserProfile.objects.filter(user = )
-	context = {'post': post, 'form':form, 'comments':comments,}
+	bio = get_object_or_404(UserProfile, user = post.author)
+	context = {'post': post, 'form':form, 'comments':comments, 'bio':bio, 'comment_all':comment_all}
 	return render(request, 'rammyblog/details.html', context)
 
 @login_required
 def comment_delete(request, comment_id, post_slug):
-	comment = get_object_or_404(Comment, pk =comment_id)
+	comment = get_object_or_404(Comment, id =comment_id)
 	post = get_object_or_404(Blogpost, slug = post_slug)
 	if request.method == 'POST':
 		comment.delete()
@@ -68,14 +83,17 @@ def comment_delete(request, comment_id, post_slug):
 
 	context = {'comment':comment}
 	return render(request, 'rammyblog/comment_delete.html', context)
-"""
-def comment_pics(request, comment_id):
-	comment = get_object_or_404(Comment, pk =comment_id)
-	print(comment.created_by)
-	picture = get_object_or_404(UserProfile, user = comment.created_by)
-	print (picture.picture)
-	context = {'picture':picture}
-	return render(request, 'rammyblog/details.html', context)"""
+
+@login_required
+def comment_delete(request, comment_id, post_slug):
+	comment = get_object_or_404(Comment, id =comment_id)
+	post = get_object_or_404(Blogpost, slug = post_slug)
+	if request.method == 'POST':
+		comment.delete()
+		return redirect('details', post.slug )
+
+	context = {'comment':comment}
+	return render(request, 'rammyblog/comment_delete.html', context)
 
 @login_required
 def comment_edit(request, comment_id, post_slug):
@@ -105,6 +123,7 @@ def new_post(request):
 			post = form.save(commit=False)
 			post.author = request.user
 			post.save()
+			
 			return redirect('details', post.slug)
 	else:
 		form = PostForm()
@@ -192,7 +211,7 @@ def profile(request, username):
 	bio = UserProfile.objects.filter(user = author)
 	posts = Blogpost.objects.filter(author = author).exclude(pub_date__isnull = True)
 	context = {'posts':posts, 'bio':bio, 'author':author}
-	return render(request, 'rammyblog/profile_page2.html', context)
+	return render(request, 'rammyblog/profile_page3.html', context)
 
 @login_required
 def accountupdate(request):
@@ -226,3 +245,31 @@ def upload_pics(request):
             m.save()
             return redirect('profile', request.user)
     return HttpResponseForbidden('allowed only via POST')
+
+"""def comment_thread(request, pk):
+	comment =get_object_or_404(Comment, pk = pk)
+	#form = CommentForm(request.POST or None)
+	if request.method == 'POST':
+		form = CommentForm(request.POST)
+		if form.is_valid():
+			new_comment = form.save(commit = False)
+			new_comment.post = post
+			new_comment.created_by = request.user
+			new_comment.topic_id = post.pk
+			new_comment.photo_id = request.user.pk
+			parent_obj = None
+			try:
+				new_comment.parent_id = int(request.POST.get("parent_id"))
+			except:
+				new_comment.parent_id = None
+			if new_comment.parent_id:
+				parent_qs = Comment.objects.filter(id  = new_comment.parent_id)
+				if parent_qs.exists() and parent_qs.count()== 1:
+					parent_obj = parent_qs.first()		
+
+			new_comment.save()
+			return redirect('details', post_slug)
+	else:
+		form = CommentForm()
+	context = {'comment':comment, 'form':form}
+	return render(request, 'rammyblog/comment_thread.html', context)"""
