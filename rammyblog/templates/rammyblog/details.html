@@ -98,6 +98,7 @@
             </div>
           </div>
 
+
           <!-- Single Comment -->
           {% for comment in comments %}
           <div class="media mb-4">
@@ -108,13 +109,17 @@
             {%endif%}
             <div class="media-body">
               <a href="{%url 'profile' comment.created_by%}"><h5 class="mt-0">{{comment.created_by}}</h5></a>
+        
+
 
               <div class="content-markdown">{{comment.message  | linebreaks}}</div>
               {%if comment.created_by == request.user%}
               <a href="{%url 'comment_delete' comment.id post.slug%}">Delete</a>
               <a href="{%url 'comment_edit' comment.id post.slug%}">Edit</a>
+
               {% endif %} 
               {%if comment.children.count > 0 %} {{comment.children.count}} Comments {% endif %}<a class="comment-reply-" href="#">Reply</a>
+
 
               <div class="comment-reply" style="display: none;">
               {% for child_comment in comment.children%}
@@ -122,6 +127,7 @@
             <img class="d-flex mr-3 rounded-circle" src="{{comment.photo.picture.url}}" alt="" height="50" width="50">
             <div class="media-body">
               <a href="{%url 'profile' comment.created_by%}"><h5 class="mt-0">{{child_comment.created_by}}</h5></a>
+       
               <div class="content-markdown">{{child_comment.message  | linebreaks}}</div>
               {%if child_comment.created_by == request.user%}
               <a href="{%url 'comment_delete' child_comment.id post.slug%}">Delete</a>
@@ -139,21 +145,19 @@
               </form>
             
 
+
+
               {%else%}
               <p>You must be Logged in to Leave a Comment</p>
               <p> <a href="{%url 'login'%}">Log in </a>or <a href="{%url 'register'%}">SignUp</a> If you do not have an Account</p>
               {%endif%}
             </div>
-          </div>
-        </div>
-        </div>
-          </div>
 
           {%empty%}
           <p>No Comment Yet</p>
           {%endfor%}
           {%endif%}
-    
+  
 
 </section> 
    

@@ -1,0 +1,269 @@
+
+{%load static%}
+{% block content%}
+{%load humanize%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
+    <title>profile page for professionals - Bootsnipp.com</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+ 
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+     <link href="{%static 'rammyblog/css/profile_page.css'%}" rel="stylesheet">
+
+    <link href="{%static 'rammyblog/vendor/bootstrap/css/bootstrap.css'%}" rel="stylesheet">
+
+  <script src="{%static 'rammyblog/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+
+    
+    <title>{%block title%} BloggersBlog{%endblock%}</title>
+    
+
+    <!-- Bootstrap core CSS -->
+
+    <!-- Custom styles for this template -->
+    <link href="{%static 'rammyblog/css/blog-home.css'%}" rel="stylesheet">
+</head>
+
+{%for bio in bio%}
+<body>
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+ <!-- Navigation -->
+ 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="{%url 'index'%}">BloggerBlog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+      
+      {%if user.is_authenticated%}
+      <li class="nav-item"><a class="nav-link" href="{%url 'new_post'%}">New Post</a><span></span></li>
+      <li class="nav-item"><a class="nav-link" href="{%url 'post_draft'%}">Drafts</a><span></span></li>
+      {% endif %}
+      {%if user.is_staff%}
+      <li class="nav-item"><a class="nav-link" href="{%url 'admin_draft'%}">All Drafts</a><span></span></li>
+      {% endif %}
+  
+     {% if user.is_authenticated %}
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             Hi, {{ user.username | title}}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+              <a class="dropdown-item" href="{%url 'profile' user.username %}">My account</a>
+              <a class="dropdown-item" href="{%url 'accountsettings'  %}">Account Settings</a>
+              <a class="dropdown-item" href="{%url 'password_change'  %}">Change password</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+            </div>
+          </li>
+        </ul>
+      {% else %}
+    <form class="form-inline ml-auto">
+          <a href="{%url 'login'%}" class="btn btn-outline-secondary">Log in</a>
+          <a href="{% url 'register' %}" class="btn btn-primary ml-2">Sign up</a>
+        </form>
+      {% endif %}
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+<div class="container">
+<div class="row">
+      <div class="col-md-12 text-center ">
+        <div class="panel panel-default">
+          <div class="userprofile social ">
+            <div class="userpic"> <a href="{{bio.picture_or_default.url}}"><img src="{{bio.picture_or_default.url}}" alt="{{author.username}}" class="userpicimg" width="150" height="150" /></a> </div>
+              {%if request.user == bio.user%}
+        <center><div class="user" ><form action="{% url 'upload_pics' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input id="id_image" type="file" class="" name="image">
+
+          <input type="submit" value="Submit" />
+        </form></div></center>
+        {% endif %}
+            <h3 class="username">{{author.first_name|title }} {{author.last_name|title }} ({{author.username|title }})</h3>
+            <p>{{bio.city|title }}</p>
+
+
+            <div class="socials tex-center"> <a href="{{bio.Facebook_url}}" target="_blank" class="btn btn-circle btn-primary ">
+            <i class="fa fa-facebook"></i></a> <a href="{{bio.Google}}" target="_blank" class="btn btn-circle btn-danger ">
+            <i class="fa fa-google-plus"></i></a> <a href="{{bio.Twitter_url}}" target="_blank" class="btn btn-circle btn-info ">
+            <i class="fa fa-twitter"></i></a> <a href="" class="btn btn-circle btn-warning "><i class="fa fa-envelope"></i></a>
+            </div>
+          </div>
+          <div class="col-md-12 border-top border-bottom">
+            <ul class="nav nav-pills pull-left countlist" role="tablist">
+              <li role="presentation">
+                <h3>{% with posts.count as total_posts %}
+{{ total_posts }} {{ total_comments|pluralize }}
+{% endwith %}<br>
+                  <small>Articles</small> </h3>
+              </li>
+              <li role="presentation">
+                <h3>{%if author.is_superuser%}
+                Admin
+              {%elif author.is_staff%}
+              Staff
+              {%else%}
+              Author
+              {%endif%}<br>
+                  <small>Role</small> </h3>
+              </li>
+              <!--<li role="presentation">
+                <h3>5000<br>
+                  <small>Activity</small> </h3>
+              </li>-->
+            </ul>
+
+        
+       
+      </div>
+            <button class="btn btn-primary followbtn">Edit Profile</button>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+      <!-- /.col-md-12 -->
+         <div class="col-md-4 col-sm-12 pull-right">
+      <div class="card my-4">
+            <h5 class="card-header">Personal Details</h5>
+            <div class="card-body">
+              <div class="input-group">
+               
+          
+        <div class="panel panel-default">
+          <div class="panel-heading">
+          
+              
+           <p >About: {{bio.about |linebreaksbr}}</p>
+            <p>Lives in: {{bio.city|title }}</p> <p>Website: <a href="{{bio.website}}">{{bio.website}}</a></p>
+     
+     </div>
+
+</div>
+            </div>
+          </div>
+      
+       
+          <div class="clearfix"></div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+           <!-- <h1 class="page-header small">Worked with many domain</h1>
+            <p class="page-subtitle small">Like to work fr different business</p>-->
+          </div>
+          <div class="col-md-12">
+            <!--<ul class="list-group">
+              <li class="list-group-item"><span class="fa fa-male"></span> Worked with 1000+ people</li>
+              <li class="list-group-item"><span class="fa fa-institution"></span> 60+ offices</li>
+              <li class="list-group-item"><span class="fa fa-user"></span> 50000+ satify customers</li>
+              <li class="list-group-item"><span class="fa fa-clock-o"></span> Work hours many and many still counting</li>
+              <li class="list-group-item"><span class="fa fa-heart"></span> Customer satisfaction for servics</li>
+            </ul>-->
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <!--<h1 class="page-header small">What others are saying </h1>
+            <p class="page-subtitle small">Express your self, Express to other</p>-->
+          </div>
+         
+        
+          <div class="clearfix"></div>
+        </div>
+      </div>
+      <div class="col-md-8 col-sm-12 pull-left posttimeline">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="status-upload nopaddingbtm">
+            
+           
+            </div>
+            <!-- Status Upload  --> 
+          </div>
+        </div>
+        
+
+     
+           
+          
+        <!--<div class="panel panel-default">
+          <div class="btn-group pull-right postbtn">
+            <button type="button" class="dotbtn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> <span class="dots"></span> </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+              <li><a href="javascript:void(0)">Hide this</a></li>
+              <li><a href="javascript:void(0)">Report</a></li>
+            </ul>
+          </div>-->
+
+           
+      
+
+          <div class="col-md-12">
+            {%for post in posts %}
+            <div class="media">
+              
+              <div class="media-body">
+                
+              <h2 class=""><a href="{%url 'details' post.slug %}">{{post.title}}</a></h2>
+              <h5>{{post.content| truncatechars:200 | cut:"![](" |cut:")" | urlizetrunc:1 |cut:"..." }}...</h5>
+           
+          <i class="fa fa-user"></i>
+<a class="g-profile" href="{%url 'profile' post.author%}" rel="author" title="{{post.author | title}}" data-gapiscan="true" data-onload="true" data-gapiattached="true">
+<span itemprop="name">{{post.author | title}}</span></a> <i class="fa fa-tag"></i> 
+<a href="{%url 'tags' post.tags%}">{{ post.tags}}</a> <i class="fa fa-commenting-o"></i>
+<a class="comment-bubble" href="#comment" onclick="">{% with comment_all.count  as total_comments %}
+{{ total_comments }} comment{{ total_comments|pluralize }}
+{% endwith %}</a>   <i class="fa fa-eye"></i>
+  <span class="ga-page-views">{{post.views}}</span> views 
+  <i class="fa fa-clock-o"></i> <span class="ga-page-views">{% if post.read_time <= 1 %} {{post.read_time}}1 minute read {%else%}
+  {{post.read_time}} minutes read {% endif %}</span> 
+
+
+<i class="fa fa-calendar-o"></i>
+<abbr class="published timeago">{%if post.pub_date%} {{post.pub_date | date:" F d, Y" }}</abbr>
+          {%else%}
+          {%if user.is_staff%}<a class="btn btn-default" href="{% url 'post_publish' post.slug %}">Publish</a>{% endif %}
+
+          {% endif %} {%if request.user == post.author or user.is_staff%} <a href="{% url 'post_edit' post.slug %}">Edit</a> | <a href="{% url 'post_delete' post.slug %}">Delete Post</a>{% endif %}
+
+
+</a>  </a>
+            </div>
+        </h4>
+             </div>
+        <br>
+        {% endfor %}
+       
+      {% include 'rammyblog/includes/pagination.html' %}
+{%endfor%}
+{%endblock%}
+
+              </div>
+            </div>
+          </div>
+          
+            <!-- Status Upload  --> 
+            
+          </div>
+        </div>
+        
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

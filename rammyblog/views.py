@@ -210,8 +210,11 @@ def profile(request, username):
 	author = get_object_or_404(User, username = username)
 	bio = UserProfile.objects.filter(user = author)
 	posts = Blogpost.objects.filter(author = author).exclude(pub_date__isnull = True)
-	context = {'posts':posts, 'bio':bio, 'author':author}
-	return render(request, 'rammyblog/profile_page3.html', context)
+	comment = Comment.objects.filter(active = True).order_by('-created_at').filter(parent = None)
+	comment_all = comment.filter(active = True).order_by('-created_at')
+	print (posts)
+	context = {'posts':posts, 'bio':bio, 'author':author, 'comment_all':comment_all}
+	return render(request, 'rammyblog/profile_page_for_professionals.html', context)
 
 @login_required
 def accountupdate(request):

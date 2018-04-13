@@ -28,7 +28,7 @@ class Blogpost(models.Model):
 	updated = models.DateTimeField(auto_now = True)
 	slug = models.SlugField(blank = True, null = True)
 	views = models.IntegerField(default = 0)
-
+	#topic = models.ForeignKey(Comment, related_name='comments', on_delete = models.CASCADE)
 
 	def publish(self):
 		self.pub_date = timezone.now()
@@ -50,6 +50,9 @@ class UserProfile(models.Model):
 	about = models.TextField(max_length = 10000)
 	picture = models.ImageField(upload_to='profile_images')
 	website = models.URLField()
+	Facebook_url = models.URLField(default ='http://www.facebook.com')
+	Twitter_url = models.URLField(default ='http://www.twitter.com')
+	Google = models.URLField(default ='http://www.googleplus.com')
 	phone = models.IntegerField(default = 0)
 	city = models.CharField(max_length = 50, blank = True)
 
