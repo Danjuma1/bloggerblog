@@ -50,9 +50,9 @@ class UserProfile(models.Model):
 	about = models.TextField(max_length = 10000)
 	picture = models.ImageField(upload_to='profile_images')
 	website = models.URLField()
-	Facebook_url = models.URLField(default ='http://www.facebook.com')
-	Twitter_url = models.URLField(default ='http://www.twitter.com')
-	Google = models.URLField(default ='http://www.googleplus.com')
+	facebook_url = models.URLField(default ='http://www.facebook.com')
+	twitter_url = models.URLField(default ='http://www.twitter.com')
+	google = models.URLField(default ='http://www.googleplus.com')
 	phone = models.IntegerField(default = 0)
 	city = models.CharField(max_length = 50, blank = True)
 

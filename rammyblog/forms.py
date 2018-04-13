@@ -34,7 +34,7 @@ class Register(UserCreationForm):
 class UserProfileForm(forms.ModelForm):
 	class Meta:
 		model = UserProfile
-		fields = [ 'website', 'about', 'city', 'phone',]
+		fields = [ 'website', 'about', 'city', 'phone', 'facebook_url', 'twitter_url', 'google']
 
 
 class ImageUploadForm(forms.Form):

@@ -226,10 +226,16 @@ def accountupdate(request):
 			website = form.cleaned_data['website']
 			city = form.cleaned_data['city']
 			about = form.cleaned_data['about']
+			facebook_url = form.cleaned_data['facebook_url']
+			twitter_url = form.cleaned_data['twitter_url']
+			google = form.cleaned_data['google']
 			profile = UserProfile.objects.get(user = request.user)
 			profile.website = website
 			profile.city = city
 			profile.about = about
+			profile.facebook_url = facebook_url
+			profile.twitter_url = twitter_url
+			profile.google = google
 			profile.save()
 			form.save()
 			return redirect('profile', request.user)
