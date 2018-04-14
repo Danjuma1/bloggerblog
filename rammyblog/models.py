@@ -12,9 +12,9 @@ from markdownx.utils import markdownify # <---
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.fields import ArrayField
+#from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
-from taggit.managers import TaggableManager
+#from taggit.managers import TaggableManager
 from .utils import get_read_time
 
 class Blogpost(models.Model):
